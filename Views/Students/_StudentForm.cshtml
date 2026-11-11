@@ -1,0 +1,92 @@
+@model Student
+@*
+    Shared form fields for Create and Edit.
+    A "partial view" lets both pages use the same HTML, so a change here updates both forms.
+*@
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+<h6 class="form-section-title"><i class="bi bi-person"></i> Personal information</h6>
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label asp-for="FirstName" class="form-label">First name</label>
+        <input asp-for="FirstName" class="form-control" placeholder="e.g. Abdur" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="LastName" class="form-label">Last name</label>
+        <input asp-for="LastName" class="form-control" placeholder="e.g. Rahman" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Gender" class="form-label"></label>
+        <select asp-for="Gender" class="form-select"><option>Male</option><option>Female</option><option>Other</option></select>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="DateOfBirth" class="form-label">Date of birth</label>
+        <input asp-for="DateOfBirth" type="date" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="GuardianName" class="form-label">Guardian name</label>
+        <input asp-for="GuardianName" class="form-control" />
+    </div>
+</div>
+
+<h6 class="form-section-title"><i class="bi bi-mortarboard"></i> Academic information</h6>
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label asp-for="StudentId" class="form-label">Student ID</label>
+        <input asp-for="StudentId" id="StudentId" class="form-control id-input" readonly />
+        <small class="text-muted">Generated automatically from department and batch.</small>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="DepartmentId" class="form-label">Department</label>
+        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select"></select>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Program" class="form-label"></label>
+        <input asp-for="Program" class="form-control" placeholder="BSc in CSE" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Batch" class="form-label"></label>
+        <input asp-for="Batch" class="form-control" placeholder="2024" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Semester" class="form-label"></label>
+        <input asp-for="Semester" type="number" min="1" max="8" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="AdmissionDate" class="form-label">Admission date</label>
+        <input asp-for="AdmissionDate" type="date" class="form-control" />
+    </div>
+    @if (Model.Id > 0)
+    {
+        <div class="col-12">
+            <div class="form-check form-switch">
+                <input asp-for="IsActive" class="form-check-input" role="switch" />
+                <label asp-for="IsActive" class="form-check-label">Active student</label>
+            </div>
+        </div>
+    }
+</div>
+
+<h6 class="form-section-title"><i class="bi bi-telephone"></i> Contact information</h6>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone" class="form-control" placeholder="01XXX-XXXXXX" />
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="GuardianPhone" class="form-label">Guardian phone</label>
+        <input asp-for="GuardianPhone" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Address" class="form-label"></label>
+        <textarea asp-for="Address" class="form-control" rows="1"></textarea>
+    </div>
+</div>

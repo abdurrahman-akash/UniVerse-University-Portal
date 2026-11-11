@@ -1,0 +1,73 @@
+﻿@model Faculty
+@{
+    ViewData["Title"] = "Add Faculty";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Add faculty member</h1>
+        <p>Register a new teacher and assign a department.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back to faculty</a>
+</div>
+
+<form asp-action="Create" method="post" class="card">
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+        <h6 class="form-section-title"><i class="bi bi-person"></i> Personal information</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label asp-for="FirstName" class="form-label">First name</label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="LastName" class="form-label">Last name</label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h6 class="form-section-title"><i class="bi bi-briefcase"></i> Position</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label asp-for="Designation" class="form-label"></label>
+                <select asp-for="Designation" class="form-select">
+                    <option>Professor</option>
+                    <option>Associate Professor</option>
+                    <option>Assistant Professor</option>
+                    <option>Lecturer</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="DepartmentId" class="form-label">Department</label>
+                <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select"></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="JoiningDate" class="form-label">Joining date</label>
+                <input asp-for="JoiningDate" type="date" class="form-control" />
+            </div>
+        </div>
+
+        <h6 class="form-section-title"><i class="bi bi-telephone"></i> Contact</h6>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="name@universe.edu" />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+        <a asp-action="Index" class="btn btn-light">Cancel</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Save faculty</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

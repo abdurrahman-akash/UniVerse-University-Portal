@@ -1,0 +1,37 @@
+﻿@using SchoolManagementSystem.Models
+@model SchoolManagementSystem.Models.ViewModels.CreateUserViewModel
+@{
+    ViewData["Title"] = "Add User";
+}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white"><h5 class="mb-0">Add User</h5></div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label asp-for="FirstName" class="form-label"></label><input asp-for="FirstName" class="form-control" /></div>
+                        <div class="col-md-6"><label asp-for="LastName" class="form-label"></label><input asp-for="LastName" class="form-control" /></div>
+                        <div class="col-md-6"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /></div>
+                        <div class="col-md-6">
+                            <label asp-for="Role" class="form-label"></label>
+                            <select asp-for="Role" class="form-select">
+                                <option value="@AppRoles.Admin">Admin</option>
+                                <option value="@AppRoles.Faculty">Faculty</option>
+                                <option value="@AppRoles.Student">Student</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6"><label asp-for="Password" class="form-label"></label><input asp-for="Password" class="form-control" /></div>
+                        <div class="col-md-6"><label asp-for="ConfirmPassword" class="form-label"></label><input asp-for="ConfirmPassword" class="form-control" /></div>
+                    </div>
+                    <button class="btn btn-primary mt-3">Create User</button>
+                    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+@{
+    // Which menu item should be highlighted? Compare with the current controller name.
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    string Active(string controller) => currentController == controller ? "active" : "";
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - UniVerse | University Management System</title>
+
+    <!-- Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 + Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-shell">
+
+        <!-- ================= SIDEBAR =================
+             On large screens it is always visible.
+             On phones it becomes a Bootstrap "offcanvas" that slides in from the left. -->
+        <aside class="sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="sidebar">
+            <div class="sidebar-brand">
+                <a class="d-flex align-items-center gap-2 text-decoration-none" asp-controller="Dashboard" asp-action="Index">
+                    <span class="brand-logo"><i class="bi bi-mortarboard-fill"></i></span>
+                    <span>
+                        <span class="brand-name">UniVerse</span>
+                        <span class="brand-sub">University Portal</span>
+                    </span>
+                </a>
+                <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close"></button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <a class="side-link @Active("Dashboard")" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+
+                <div class="nav-section">Academic</div>
+                <a class="side-link @Active("Students")" asp-controller="Students" asp-action="Index"><i class="bi bi-people"></i> Students</a>
+                <a class="side-link @Active("Faculty")" asp-controller="Faculty" asp-action="Index"><i class="bi bi-person-badge"></i> Faculty</a>
+                <a class="side-link @Active("Departments")" asp-controller="Departments" asp-action="Index"><i class="bi bi-building"></i> Departments</a>
+                <a class="side-link disabled" href="#"><i class="bi bi-journal-bookmark"></i> Courses <span class="soon">Soon</span></a>
+                <a class="side-link disabled" href="#"><i class="bi bi-calendar2-check"></i> Attendance <span class="soon">Soon</span></a>
+                <a class="side-link disabled" href="#"><i class="bi bi-clipboard-data"></i> Exams &amp; Results <span class="soon">Soon</span></a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="side-link @Active("Users")" asp-controller="Users" asp-action="Index"><i class="bi bi-people-fill"></i> User Management</a>
+                }
+                <a class="side-link disabled" href="#"><i class="bi bi-wallet2"></i> Fees &amp; Payments <span class="soon">Soon</span></a>
+                <a class="side-link disabled" href="#"><i class="bi bi-megaphone"></i> Notices <span class="soon">Soon</span></a>
+                <a class="side-link" href="/swagger" target="_blank"><i class="bi bi-braces"></i> API / Swagger</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="semester-card">
+                    <small>Current Semester</small>
+                    <strong>Spring 2026</strong>
+                    <div class="progress mt-2" role="progressbar" aria-label="Semester progress" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width: 62%"></div>
+                    </div>
+                    <small class="d-block mt-1">Week 10 of 16</small>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN AREA ================= -->
+        <div class="main-area">
+            <header class="topbar">
+                <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Open menu">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div class="topbar-title">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a asp-controller="Dashboard" asp-action="Index">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <form class="topbar-search d-none d-md-flex" method="get" asp-controller="Students" asp-action="Index">
+                    <i class="bi bi-search"></i>
+                    <input name="search" class="form-control" placeholder="Search students by name or ID..." />
+                </form>
+
+                <div class="d-flex align-items-center gap-2 ms-auto ms-md-0">
+                    <div class="dropdown">
+                        <button class="btn btn-icon position-relative" data-bs-toggle="dropdown" aria-label="Notifications">
+                            <i class="bi bi-bell"></i>
+                            <span class="notify-dot"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end shadow-sm notify-menu">
+                            <h6 class="dropdown-header">Notifications</h6>
+                            <a class="dropdown-item" href="#"><i class="bi bi-calendar-event text-primary"></i> Mid-term exam routine published</a>
+                            <a class="dropdown-item" href="#"><i class="bi bi-person-plus text-success"></i> New student admission</a>
+                            <a class="dropdown-item" href="#"><i class="bi bi-cash-coin text-warning"></i> Fee deadline: 30 Nov</a>
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn user-chip" data-bs-toggle="dropdown">
+                            <span class="avatar avatar-sm bg-primary-subtle text-primary">AD</span>
+                            <span class="d-none d-sm-block text-start lh-sm">
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    <span class="fw-semibold">@User.Identity.Name</span>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-sm">Login</a>
+                                }
+
+                                <small class="text-muted">Registrar Office</small>
+                            </span>
+                            <i class="bi bi-chevron-down small text-muted"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> My Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+                        <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @RenderBody()
+            </main>
+
+            <footer class="page-footer">
+                © 2026 UniVerse University · Management System
+            </footer>
+        </div>
+    </div>
+
+    <!-- jQuery is needed by the form validation scripts (_ValidationScriptsPartial) -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

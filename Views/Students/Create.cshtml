@@ -1,0 +1,41 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "Add Student";
+}
+
+<div class="page-header">
+    <div>
+        <h1>New admission</h1>
+        <p>Fill in the student's details. The Student ID is created automatically.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back to students</a>
+</div>
+
+<form asp-action="Create" method="post" class="card">
+    <div class="card-body">
+        <partial name="_StudentForm" model="Model" />
+    </div>
+    <div class="form-actions">
+        <a asp-action="Index" class="btn btn-light">Cancel</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Save student</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Update the Student ID box when the department or batch changes
+        const deptSelect = document.getElementById('DepartmentId');
+        const batchInput = document.getElementById('Batch');
+        const studentIdBox = document.getElementById('StudentId');
+
+        async function updateStudentIdBox() {
+            const response = await fetch(`/Students/GetNextStudentId?departmentId=${deptSelect.value}&batch=${batchInput.value}`);
+            const data = await response.json();
+            studentIdBox.value = data.studentId;
+        }
+
+        deptSelect.addEventListener('change', updateStudentIdBox);
+        batchInput.addEventListener('input', updateStudentIdBox);
+    </script>
+}
