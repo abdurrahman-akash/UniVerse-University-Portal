@@ -69,6 +69,7 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
+    await UniversitySeedData.SeedAsync(scope.ServiceProvider);
 }
 
 app.Run();
