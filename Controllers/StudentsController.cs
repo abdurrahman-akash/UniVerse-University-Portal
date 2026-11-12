@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
@@ -13,11 +13,13 @@ namespace SchoolManagementSystem.Controllers
     {
         private readonly IStudentService _service;
         private readonly ApplicationDbContext _db;
+        private readonly IFileService _fileService;
 
-        public StudentsController(IStudentService service, ApplicationDbContext db)
+        public StudentsController(IStudentService service, ApplicationDbContext db, IFileService fileService)
         {
             _service = service;
             _db = db;
+            _fileService = fileService;
         }
 
         // GET: /Students
@@ -67,12 +69,12 @@ namespace SchoolManagementSystem.Controllers
         // POST: /Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Student student)
+        public async Task<IActionResult> Create(Student student, IFormFile? profilePhoto)
         {
             // Auto-generate StudentId, it does not come from the form
             if (student.DepartmentId > 0)
             {
-                student.StudentId = await GenerateStudentIdAsync(student.DepartmentId, student.Batch);
+                student.StudentId = await GenerateStudentIdAsync(student.DepartmentId, student.Batch ?? DateTime.Now.Year.ToString());
                 ModelState.Remove("StudentId");
             }
 
@@ -81,6 +83,22 @@ namespace SchoolManagementSystem.Controllers
                 ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
                 return View(student);
             }
+
+            // Save profile photo if provided
+            if (profilePhoto != null && profilePhoto.Length > 0)
+            {
+                try
+                {
+                    student.ProfilePicture = await _fileService.SaveStudentPhotoAsync(profilePhoto, student.StudentId, student.FullName);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                    ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
+                    return View(student);
+                }
+            }
+
             var result = await _service.CreateAsync(student);
             if (!result.Success)
             {
@@ -88,7 +106,7 @@ namespace SchoolManagementSystem.Controllers
                 ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
                 return View(student);
             }
-            TempData["Success"] = result.Message;
+            TempData["Success"] = $"Student {student.FullName} ({student.StudentId}) added successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -133,34 +151,79 @@ namespace SchoolManagementSystem.Controllers
         }
 
         // GET: /Students/Edit/1
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string? returnUrl = null)
         {
             var student = await _service.GetByIdAsync(id);
             if (student == null) return NotFound();
             ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
+            ViewBag.ReturnUrl = returnUrl;
             return View(student);
         }
 
         // POST: /Students/Edit/1
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Student student)
+        public async Task<IActionResult> Edit(int id, Student student, IFormFile? profilePhoto, string? returnUrl = null)
         {
             if (id != student.Id) return NotFound();
             if (!ModelState.IsValid)
             {
                 ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
+                ViewBag.ReturnUrl = returnUrl;
                 return View(student);
             }
+
+            // Get existing photo path without tracking entity
+            var existingPhoto = await _db.Students
+                .AsNoTracking()
+                .Where(s => s.Id == id)
+                .Select(s => s.ProfilePicture)
+                .FirstOrDefaultAsync();
+
+            if (profilePhoto != null && profilePhoto.Length > 0)
+            {
+                try
+                {
+                    // Delete old photo if existed
+                    _fileService.DeleteFile(existingPhoto);
+                    // Save new photo
+                    student.ProfilePicture = await _fileService.SaveStudentPhotoAsync(profilePhoto, student.StudentId, student.FullName);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                    ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
+                    ViewBag.ReturnUrl = returnUrl;
+                    return View(student);
+                }
+            }
+            else
+            {
+                // Retain previous photo if no new file is uploaded
+                student.ProfilePicture = existingPhoto;
+            }
+
             var result = await _service.UpdateAsync(student);
             if (!result.Success)
             {
                 ModelState.AddModelError("StudentId", result.Message);
                 ViewBag.Departments = new SelectList(await _db.Departments.ToListAsync(), "Id", "Name", student.DepartmentId);
+                ViewBag.ReturnUrl = returnUrl;
                 return View(student);
             }
-            TempData["Success"] = result.Message;
-            return RedirectToAction(nameof(Index));
+            TempData["Success"] = $"✅ {student.FirstName} {student.LastName} ({student.StudentId}) এর তথ্য সফলভাবে আপডেট হয়েছে।";
+            TempData["UpdatedStudentId"] = student.Id;
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                var cleanUrl = returnUrl.Split('#')[0];
+                if (Url.IsLocalUrl(cleanUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+            }
+
+            return RedirectToAction(nameof(Index), new { highlight = student.Id });
         }
 
         // GET: /Students/Delete/1
@@ -177,8 +240,18 @@ namespace SchoolManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _service.DeleteAsync(id);
-            TempData["Success"] = "Student deleted successfully.";
+            var student = await _service.GetByIdAsync(id);
+            if (student != null)
+            {
+                // Delete photo file from server
+                _fileService.DeleteFile(student.ProfilePicture);
+                await _service.DeleteAsync(id);
+                TempData["Success"] = $"Student {student.FullName} deleted successfully.";
+            }
+            else
+            {
+                TempData["Success"] = "Student deleted successfully.";
+            }
             return RedirectToAction(nameof(Index));
         }
     }

@@ -6,6 +6,32 @@
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
 
+<h6 class="form-section-title"><i class="bi bi-camera"></i> Student Profile Picture</h6>
+<div class="row g-3 mb-4 align-items-center">
+    <div class="col-auto">
+        <div class="photo-preview-box">
+            @if (!string.IsNullOrEmpty(Model?.ProfilePicture))
+            {
+                <img id="photoPreview" src="@Model.ProfilePicture" alt="Student Photo" class="photo-preview-img" />
+            }
+            else
+            {
+                <img id="photoPreview" src="" alt="Preview" class="photo-preview-img d-none" />
+                <div id="photoPlaceholder" class="photo-placeholder">
+                    <i class="bi bi-person fs-1 text-muted"></i>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col">
+        <label for="profilePhotoInput" class="form-label fw-semibold">Upload New Photo</label>
+        <input type="file" name="profilePhoto" id="profilePhotoInput" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+        <small class="text-muted d-block mt-1">
+            <i class="bi bi-info-circle"></i> Allowed formats: JPG, PNG, WEBP (Max 5MB). Photo is organized in <code>student-photos</code> with student name and ID.
+        </small>
+    </div>
+</div>
+
 <h6 class="form-section-title"><i class="bi bi-person"></i> Personal information</h6>
 <div class="row g-3 mb-4">
     <div class="col-md-6">
@@ -59,7 +85,7 @@
         <label asp-for="AdmissionDate" class="form-label">Admission date</label>
         <input asp-for="AdmissionDate" type="date" class="form-control" />
     </div>
-    @if (Model.Id > 0)
+    @if (Model?.Id > 0)
     {
         <div class="col-12">
             <div class="form-check form-switch">
@@ -90,3 +116,26 @@
         <textarea asp-for="Address" class="form-control" rows="1"></textarea>
     </div>
 </div>
+
+<script>
+    (function () {
+        const input = document.getElementById('profilePhotoInput');
+        const preview = document.getElementById('photoPreview');
+        const placeholder = document.getElementById('photoPlaceholder');
+
+        if (input) {
+            input.addEventListener('change', function (e) {
+                const file = e.target.files && e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        preview.src = event.target.result;
+                        preview.classList.remove('d-none');
+                        if (placeholder) placeholder.classList.add('d-none');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    })();
+</script>

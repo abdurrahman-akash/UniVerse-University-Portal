@@ -318,7 +318,7 @@ namespace SchoolManagementSystem.Migrations
                             Designation = "Professor",
                             Email = "kamal@universe.edu",
                             FirstName = "Kamal",
-                            JoiningDate = new DateTime(2026, 11, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            JoiningDate = new DateTime(2026, 11, 12, 0, 0, 0, 0, DateTimeKind.Local),
                             LastName = "Hossain"
                         },
                         new
@@ -328,7 +328,7 @@ namespace SchoolManagementSystem.Migrations
                             Designation = "Associate Professor",
                             Email = "nasrin@universe.edu",
                             FirstName = "Nasrin",
-                            JoiningDate = new DateTime(2026, 11, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            JoiningDate = new DateTime(2026, 11, 12, 0, 0, 0, 0, DateTimeKind.Local),
                             LastName = "Akter"
                         },
                         new
@@ -338,7 +338,7 @@ namespace SchoolManagementSystem.Migrations
                             Designation = "Professor",
                             Email = "rafiq@universe.edu",
                             FirstName = "Rafiq",
-                            JoiningDate = new DateTime(2026, 11, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            JoiningDate = new DateTime(2026, 11, 12, 0, 0, 0, 0, DateTimeKind.Local),
                             LastName = "Islam"
                         });
                 });
@@ -436,6 +436,9 @@ namespace SchoolManagementSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Program")

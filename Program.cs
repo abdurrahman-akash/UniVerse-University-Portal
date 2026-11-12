@@ -14,6 +14,7 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IFacultyRepository, FacultyRepository>();
 builder.Services.AddScoped<IFacultyService, FacultyService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 
 // Identity setup - users and roles stored in the same UniversityDB
@@ -69,6 +70,7 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
+    await UniversitySeedData.SeedAsync(scope.ServiceProvider);
 }
 
 app.Run();

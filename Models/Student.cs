@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagementSystem.Models
 {
@@ -33,6 +33,9 @@ namespace SchoolManagementSystem.Models
         public string? GuardianPhone { get; set; }
         public DateTime AdmissionDate { get; set; } = DateTime.Now;
         public bool IsActive { get; set; } = true;
+
+        [Display(Name = "Profile Picture")]
+        public string? ProfilePicture { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
     }

@@ -1,4 +1,4 @@
-﻿@model Student
+@model Student
 @{
     ViewData["Title"] = "Add Student";
 }
@@ -11,7 +11,7 @@
     <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back to students</a>
 </div>
 
-<form asp-action="Create" method="post" class="card">
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="card">
     <div class="card-body">
         <partial name="_StudentForm" model="Model" />
     </div>

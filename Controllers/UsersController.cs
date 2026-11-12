@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +75,7 @@ namespace SchoolManagementSystem.Controllers
             if (user == null) return NotFound();
             if (user.Id == _userManager.GetUserId(User))
             {
-                TempData["Success"] = "You cannot delete your own account.";
+                TempData["Error"] = "You cannot delete your own account.";
                 return RedirectToAction(nameof(Index));
             }
 

@@ -8,16 +8,26 @@
         <h1>Edit student</h1>
         <p>Update the record of <strong>@Model.FullName</strong> (<span class="id-badge">@Model.StudentId</span>)</p>
     </div>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back to profile</a>
+    <a href="@(ViewBag.ReturnUrl ?? Url.Action("Details", new { id = Model.Id }))" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
 
-<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="card">
+<div class="alert alert-warning d-flex align-items-center gap-2 mb-3" role="alert">
+    <i class="bi bi-pencil-square fs-5"></i>
+    <div>
+        তুমি এখন <strong>@Model.FirstName @Model.LastName</strong> 
+        (<span class="id-badge">@Model.StudentId</span>) এর তথ্য edit করছো।
+        সঠিক student হলে নিচের form পরিবর্তন করো।
+    </div>
+</div>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card">
     <input type="hidden" asp-for="Id" />
+    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
     <div class="card-body">
         <partial name="_StudentForm" model="Model" />
     </div>
     <div class="form-actions">
-        <a asp-action="Index" class="btn btn-light">Cancel</a>
+        <a href="@(ViewBag.ReturnUrl ?? Url.Action("Index"))" class="btn btn-light">Cancel</a>
         <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Save changes</button>
     </div>
 </form>
