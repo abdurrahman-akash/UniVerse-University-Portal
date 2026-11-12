@@ -168,8 +168,7 @@ namespace SchoolManagementSystem.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var student = await _service.GetByIdAsync(id);
-            if (student == null) return NotFound();
-            return View(student);
+            return student == null ? NotFound() : View(student);
         }
 
         // Delete the student after confirmation
