@@ -1,4 +1,4 @@
-﻿@model Student
+@model Student
 @{
     ViewData["Title"] = "Delete Student";
 }
@@ -12,7 +12,14 @@
                 <p class="text-muted">This permanently removes the record. It can't be undone.</p>
 
                 <div class="person justify-content-center text-start border rounded-3 p-3 my-3">
-                    <span class="avatar @UiHelpers.TileFor(Model.FullName)">@UiHelpers.Initials(Model.FirstName, Model.LastName)</span>
+                    @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                    {
+                        <img src="@Model.ProfilePicture" alt="@Model.FullName" class="avatar avatar-img shadow-sm" />
+                    }
+                    else
+                    {
+                        <span class="avatar @UiHelpers.TileFor(Model.FullName)">@UiHelpers.Initials(Model.FirstName, Model.LastName)</span>
+                    }
                     <div>
                         <strong>@Model.FullName</strong>
                         <small>@Model.StudentId · @(Model.Department?.Name ?? "-") · @Model.Program</small>

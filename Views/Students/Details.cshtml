@@ -20,7 +20,14 @@
         <div class="card text-center">
             <div class="profile-cover"></div>
             <div class="card-body pt-0">
-                <span class="avatar avatar-xl profile-avatar @UiHelpers.TileFor(Model.FullName)">@UiHelpers.Initials(Model.FirstName, Model.LastName)</span>
+                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                {
+                    <img src="@Model.ProfilePicture" alt="@Model.FullName" class="avatar avatar-xl profile-avatar avatar-img shadow-sm" />
+                }
+                else
+                {
+                    <span class="avatar avatar-xl profile-avatar @UiHelpers.TileFor(Model.FullName)">@UiHelpers.Initials(Model.FirstName, Model.LastName)</span>
+                }
                 <h5 class="mt-2 mb-1 fw-bold">@Model.FullName</h5>
                 <p class="text-muted mb-2">@Model.Program</p>
                 <span class="id-badge">@Model.StudentId</span>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
@@ -92,7 +92,7 @@ namespace SchoolManagementSystem.Controllers
             if (department == null) return NotFound();
             if (department.Students.Any())
             {
-                TempData["Success"] = "Cannot delete this department - it still has students. Move or delete the students first.";
+                TempData["Error"] = "Cannot delete this department - it still has students. Move or delete the students first.";
                 return RedirectToAction(nameof(Index));
             }
             _db.Departments.Remove(department);
