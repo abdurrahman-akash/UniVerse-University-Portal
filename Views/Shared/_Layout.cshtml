@@ -158,6 +158,7 @@
                         <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 }
+
                 @RenderBody()
             </main>
 
@@ -166,6 +167,8 @@
             </footer>
         </div>
     </div>
+
+
 
     <!-- jQuery is needed by the form validation scripts (_ValidationScriptsPartial) -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -240,5 +243,9 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+            var toastEl = document.getElementById('successToast');
+            if (toastEl) new bootstrap.Toast(toastEl, { delay: 4000 }).show();
+    </script>
 </body>
 </html>
